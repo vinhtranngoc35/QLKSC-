@@ -1,0 +1,44 @@
+﻿@model WebApplication4.Models.Discount
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Discount</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="NumberDiscount" class="control-label"></label>
+                <input asp-for="NumberDiscount" class="form-control" />
+                <span asp-validation-for="NumberDiscount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TimeStart" class="control-label"></label>
+                <input asp-for="TimeStart" class="form-control" />
+                <span asp-validation-for="TimeStart" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TimeStop" class="control-label"></label>
+                <input asp-for="TimeStop" class="form-control" />
+                <span asp-validation-for="TimeStop" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TypeRoomId" class="control-label"></label>
+                <select asp-for="TypeRoomId" class ="form-control" asp-items="ViewBag.TypeRoomId"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

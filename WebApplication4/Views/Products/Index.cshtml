@@ -1,0 +1,414 @@
+﻿@model IEnumerable<WebApplication4.Models.Product>
+
+@{
+    ViewData["Title"] = "Index";
+}
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<h1>Index</h1>
+
+<p>
+    <a class="btn btn-success" onclick="student.openModal();">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>Price</th>
+            <th>Company</th>
+            
+            <th>Quantity</th>
+            <th>
+                @Html.DisplayNameFor(model => model.Type)
+            </th>
+            <th> Action</th>
+        </tr>
+    </thead>
+    <tbody id="tbProduct">
+    </tbody>
+</table>
+            </div>
+
+<!-- The Modal -->
+<div class="modal" id="addEditStudent">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Create Product</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form id="formAddEditStudent" enctype="multipart/form-data" method="post">
+                    <input hidden name="id" id="id" value="0">
+                    <div class="row form-group">
+                        <div class="col-3">
+                            <label>Name</label>
+                        </div>
+                        <div class="col-9">
+                            <input class="form-control" type="text"
+                                   name="name" id="name"
+                                   data-rule-required=true>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-3">
+                            <label>PriceProduct</label>
+                        </div>
+                        <div class="col-9">
+                            <input class="form-control" type="text"
+                                   name="name" id="price"
+                                   data-rule-required=true>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-3">
+                            <label>Company</label>
+                        </div>
+                        <div class="col-9">
+                            <input class="form-control" type="text"
+                                   name="name" id="company"
+                                   data-rule-required=true>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-3">
+                            <label>TypeProduct</label>
+                        </div>
+                        <div class="col-9">
+                            <select class="form-control"
+                                    id="typeProduct"
+                                    data-rule-required=true></select>
+                        </div>
+                    </div>
+                    @*<div class="row form-group">
+                        <div class="col-3">
+                            <label>Image</label>
+                        </div>
+                        <div class="col-9 divUpload">
+                            <input type="file" style="width:300px;height:300px; display:none" class="form-control" id="images" data-rule-required="true" />
+                            <img src="" alt="images product" id="urlImage" style="display:none;" />
+                        </div>
+                    </div>*@
+                <div class="row form-group divUpload">
+                    <label for="file-upload" class="custom-file-upload">
+                        +
+                        <img id="blah" src="#" alt="your image" />
+                    </label>
+                    <input id="file-upload" type="file" onchange="readURL(this)" />
+                    
+                  
+                </div>
+
+
+                </form>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <a href="javascript:;" class="btn btn-primary"
+                   onclick="student.save()">Save</a>
+
+                <button type="button" onclick="student.reset();" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+        </div>
+    </div>
+</div>
+<style>
+    input[type="file"] {
+        display: none;
+    }
+    .custom-file-upload {
+        width:160px;
+        height:160px;
+
+        border: 1px solid #ccc;
+        display: inline-block;
+        padding-top: 37px;
+        cursor: pointer;
+        font-size: 60px;
+        text-align: center;
+    }
+    #blah {
+        display: none;
+        margin-top: -129px;
+    }
+    img {
+        width: 100px;
+        height: 100px;
+
+    }
+    .divUpload {
+       
+        overflow: hidden;
+    }
+
+   
+    
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
+
+<script>
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#blah')
+                    .attr('src', e.target.result)
+                    .width(160)
+                    .height(160);
+                $('#blah').css("display", "block");  
+               
+            };
+            reader.readAsDataURL(input.files[0]);
+           
+        }
+    }
+  
+    var student = {} || student;
+    student.initClass = function () {
+        $.ajax({
+            url: "api/TypesApi/",
+            method: "GET",
+            dataType: "json",
+            success: function (data) {
+                $('#typeProduct').empty();
+                $.each(data, function (i, v) {
+                    $('#typeProduct').append(
+                        "<option value='" + v.id + "'>" + v.name + "</option>"
+                    );
+                });
+            }
+        });
+    };
+
+
+    student.drawTable = function () {
+     
+        $.ajax({
+            url: "Rooms/api/ProductsApi",
+            method: 'GET',
+            dataType: 'json',
+            contentType: 'application/json',
+            success: function (data) {
+                console.log(data)
+                $('#tbProduct').empty();
+                var i = 0;
+                $.each(data, function (i, v) {
+                    $('#tbProduct').append(
+                        "<tr>" +
+                        "<td>" + v.name + "</td>" +
+                        "<td>" + v.priceProduct + "</td>" +
+                        "<td>" + v.company + "</td>" +
+                        
+                        "<td>" + v.quantity + "</td>" +
+                        "<td>" + v.type.name + "</td>" +
+                        "<td>" +
+                        "<a href='javascript:;' title='edit student' onclick='student.get(" + v.id + ")'><i class='fa fa-edit'></i></a> " +
+                        "<a href='javascript:;' title='remove student' onclick='student.delete(" + v.id + ")' ><i class='fa fa-trash'></i></a>" +
+                        "</td>" +
+                        "</tr>"
+                    );
+                });
+            }
+        });
+    };
+
+    student.openModal = function () {
+      
+        $('#addEditStudent').modal('show');
+    };
+
+    student.save = function () {
+       
+        if ($('#id').val() == 0) {
+            var formData = new FormData();
+            var file = $('#file-upload').get(0).files;
+            formData.append('files', file[0]);
+            formData.append('name', $('#name').val());
+            formData.append('priceProduct', $('#price').val());
+            formData.append('typeId', $('#typeProduct').val());
+            formData.append('company', $('#company').val());
+            console.log(formData.files);
+            $.ajax({
+                url: "Rooms/api/ProductsApi/Images",
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    toastr.info("Created Success");
+                   
+                    $('#addEditStudent').modal('hide');
+                    student.reset();
+                    student.drawTable();
+                }
+            });
+        } else {
+            var formData = new FormData();
+            var file = $('#file-upload').get(0).files;
+            formData.append('id', $('#id').val());
+            formData.append('files', file[0]);
+            formData.append('urlImage', document.getElementById('blah').src)
+            formData.append('name', $('#name').val());
+            formData.append('priceProduct', $('#price').val());
+            formData.append('typeId', $('#typeProduct').val());
+            formData.append('company', $('#company').val());
+
+                $.ajax({
+                    url: "Rooms/api/ProductsApi/" + $('#id').val(),
+                    type: "PUT",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+
+                        let check = true;
+                        if (data != null) {
+                            $('#id').val(data.id);
+                            if (data.name !== productOld.name && $('#name').val() != data.name) {
+                                alert('Name Đã được thay đổi');
+                                $('#name').val(data.name);
+                                check = false;
+                            }
+                            if (data.priceProduct != productOld.priceProduct && $('#price').val() != data.priceProduct) {
+                                alert('Price Đã được thay đổi');
+                                $('#price').val(data.priceProduct);
+                                check = false;
+                            }
+                            if (data.typeId !== productOld.type.id && $('#typeProduct').val() != data.typeId) {
+                                alert('Type Đã được thay đổi');
+                                document.getElementById("typeProduct").value = data.typeId;
+                                check = false;
+                            }
+                            if (data.company !== productOld.company && $('#company').val() != data.company) {
+                                alert('Company Đã được thay đổi');
+                                $('#company').val(data.company);
+                                check = false;
+                            }
+                            if (data.urlImage !== productOld.urlImage && document.getElementById('blah').src != '/Upload/'+data.urlImage) {
+                                alert('Src Đã được thay đổi');
+                                document.getElementById('blah').src = '/Upload/' + data.urlImage;
+                                check = false;
+                            }
+                            if (check) {
+                                $('#addEditStudent').modal('hide');
+                            }
+                            student.drawTable();
+
+                        } else {
+                            toastr.info("Edited Success");
+                            $('#addEditStudent').modal('hide');
+                            student.reset();
+                            student.drawTable();
+                        }
+
+                    }
+                });
+            
+
+        }
+        if ($('#id').val() == 0) {
+            bootbox.alert("Created Room");
+            $('#addEditStudent').modal('hide');
+            student.drawTable();
+        }
+    };
+
+    student.delete = function (id) {
+        bootbox.confirm({
+            title: "Remove Room",
+            message: "Do you want to remove this room?",
+            size:'small',
+            buttons: {
+                cancel: {
+                    label: '<i class="fa fa-times"></i> No'
+                },
+                confirm: {
+                    label: '<i class="fa fa-check"></i> Yes'
+                }
+            },
+            callback: function (result) {
+                if (result) {
+                    $.ajax({
+                        url: "http://localhost:8080/api/product/" + id,
+                        method: "DELETE",
+                        dataType: "json",
+                        success: function (data) {
+                            toastr.info("Deleted Success");
+                            student.drawTable();
+                        }
+                    });
+                }
+            }
+        });
+    };
+    let name = '';
+    let productOld = {};
+    student.get = function (id) {
+        $.ajax({
+            url: "Rooms/api/ProductsApi/" + id,
+            method: "GET",
+            dataType: "json",
+            success: function (data) {
+                student.reset();
+                console.log('"'+data[0].urlImage+'"');
+                productOld = data[0];
+                $('#id').val(data[0].id);
+                $('#name').val(data[0].name);
+                $('#price').val(data[0].priceProduct);
+                $('#company').val(data[0].company);
+     
+                $('#blah')
+                    .attr('src', '/Upload/' + data[0].urlImage)
+                    .width(160)
+                    .height(160);
+                $('#blah').css("display", "block");  
+                $('#typeProduct option[value=' + data[0].type.id + ']').attr('selected', 'selected');
+                $('#addEditStudent').modal('show');
+            }
+        });
+    };
+    student.cutString = function (str) {
+        let indexCut = 0;
+        for (let i = 0; i < str.length; i++) {
+            if (str[i] === "_") {
+                indexCut = i;
+                break;
+            }
+        }
+        return str.slice(indexCut, str.length);
+    }
+    student.reset = function () {
+        $('#name').val('');
+        $('#price').val('');
+        $('#file-upload').val('');
+        $('#company').val('')
+        $('#id').val('0');
+        document.getElementById('blah').src = '';
+        document.getElementById('blah').style.display = 'none';
+
+    };
+
+
+
+
+    student.init = function () {
+        student.drawTable();
+        student.initClass();
+    };
+
+    $(document).ready(function () {
+        student.init();
+    });
+</script>

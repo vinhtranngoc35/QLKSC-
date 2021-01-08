@@ -1,0 +1,68 @@
+﻿
+@{
+    ViewData["Title"] = "Home Page";
+}
+@{
+    Layout = null;
+}
+@model WebApplication4.Models.LoginForm
+<style>
+
+    .text-danger {
+        display: block;
+    }
+</style>
+<link href="~/css/site.css" rel="stylesheet" />
+<div class="wrapper fadeInDown">
+    <div id="formContent">
+        <!-- Tabs Titles -->
+        <h2 id="signIn" class="active" onclick="changeForm(this.id)"> Sign In </h2>
+        <h2 id="register" class="inactive underlineHover" onclick="changeForm(this.id)">Sign Up </h2>
+
+        <!-- Icon -->
+        <!-- Login Form -->
+        <form action="Home/Login" method="post" id="form">
+            <input type='hidden' asp-for="urlReturn" value="@ViewBag.ReturnUrl" />
+            <input type="text" asp-for="Email" class="fadeIn second" placeholder="Email">
+            <span asp-validation-for="Email" class="text-danger"></span>
+            <input type="text" asp-for="Password" class="fadeIn third" placeholder="Password">
+            <span class="text-danger" asp-validation-for="Password"></span>
+            <input type='text' asp-for="PasswordConfirm" class='fadeIn third' placeholder='Confirm Password'>
+            <span class="text-danger" asp-validation-for="PasswordConfirm"></span>
+            <input type="submit" class="fadeIn fourth" value="Log In">
+        </form>
+
+        <!-- Remind Passowrd -->
+        <div id="formFooter">
+            <a class="underlineHover" href="#">Forgot Password?</a>
+        </div>
+
+    </div>
+</div>
+
+<script>document.getElementById("PasswordConfirm").style.display = 'none';
+    function changeForm(e) {
+        if (e === "signIn") {
+            document.getElementById(e).classList.add('active');
+            document.getElementById(e).classList.remove('inactive');
+            document.getElementById(e).classList.remove('underlineHover');
+            document.getElementById("register").classList.remove('active');
+            document.getElementById("register").classList.add('inactive');
+            document.getElementById("register").classList.add('underlineHover');
+            document.getElementById("PasswordConfirm").style.display = 'none';
+            document.getElementById('form').action = "/Home/Login";
+        } else {
+            document.getElementById(e).classList.add('active');
+            document.getElementById(e).classList.remove('inactive');
+            document.getElementById(e).classList.remove('underlineHover');
+            document.getElementById("signIn").classList.remove('active');
+            document.getElementById("signIn").classList.add('inactive');
+            document.getElementById("signIn").classList.add('underlineHover');
+            document.getElementById('form').action = "Home/Register"
+            document.getElementById("PasswordConfirm").style.display = 'inline-block';
+
+
+
+
+        }
+    }</script>

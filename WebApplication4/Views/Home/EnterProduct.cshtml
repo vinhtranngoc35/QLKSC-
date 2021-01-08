@@ -1,0 +1,352 @@
+﻿
+@{
+    ViewData["Title"] = "EnterProduct";
+}
+<style>
+
+    img {
+        width: 100px;
+        height: 100px;
+    }
+</style>
+
+<h1>EnterProduct</h1>
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+
+<p>
+    <a class="btn btn-success" onclick="student.openModal();">Create New</a>
+    
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name Product</th>
+            
+            <th>Quantity</th>
+            <th>Quantity Enter</th>
+            <th>Created</th>
+            <th> Action</th>
+        </tr>
+    </thead>
+    <tbody id="tbProduct">
+    </tbody>
+</table>
+
+
+<!-- The Modal -->
+<div class="modal" id="addEditStudent">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Create Product</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form id="formAddEditStudent" enctype="multipart/form-data" method="post">
+                    <input hidden name="id" id="id" value="0">
+                    <table style="width:100%;">
+                        <thead>
+                            <tr>
+                                <td >
+                                    <select style="width:250px" class="js-example-basic-single"
+                                            id="typeProduct"
+                                            data-rule-required=true name="state">
+                                        <option value="0">---Select Product---</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="text"
+                                           name="name" id="remainingAmount" class="form-control"
+                                           data-rule-required=true>
+
+
+
+                                </td>
+                                <td> <button type="button" class="btn btn-info" onclick="student.add();">Add</button></td>
+                            </tr>
+                        </thead>
+                        <tbody id="list">
+
+                        </tbody>
+                    </table>
+                    <input id="quantity" type="hidden" />
+
+                </form>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <a href="javascript:;" class="btn btn-primary"
+                   onclick="student.save()">Save</a>
+
+                <button type="button" onclick="student.reset();" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
+
+
+<script>
+    var student = {} || student;
+    let arrEnterProduct = [];
+    student.add = function () {
+        let enterProduct = {};
+        enterProduct.ProductId = $('#typeProduct').val();
+        enterProduct.remainingAmount = $('#remainingAmount').val();
+        arrEnterProduct.push(enterProduct);
+        console.log(arrEnterProduct);
+        $('#list').append(`<tr><td>${$('#typeProduct').find(':selected').data('name')}</td><td>${enterProduct.remainingAmount}</td><td><button type="button" class="btn btn-info" onclick="student.deleteEnterProduct(${arrEnterProduct.length - 1})">Delete</button></td></tr>
+        `);
+    }
+    student.deleteEnterProduct = function (e) {
+        if (arrEnterProduct.length == 1) {
+            arrEnterProduct.pop();
+            $('#list').html('');
+
+        }
+        arrEnterProduct.splice(e, 1);
+        $('#list').html('');
+        for (let i = 0; i < arrEnterProduct.length; i++) {
+            $('#list').append(`<tr><td>${$('#typeProduct').find(':selected').data('name')}</td><td>${arrEnterProduct[i].remainingAmount}</td><td><button type="button" class="btn btn-info" onclick="student.deleteEnterProduct(${i})">Delete</button></td></tr>
+        `);
+        }
+    }
+    student.initClass = function () {
+        $.ajax({
+            url: "Rooms/api/ProductsApi",
+            method: "GET",
+            dataType: "json",
+            success: function (data) {
+                $('#typeProduct').empty();
+                $.each(data, function (i, v) {
+                    $('#typeProduct').append(
+                        "<option data-name='"+v.name+"' value='" + v.id + "'>" + v.name + "</option>"
+                    );
+                });
+            }
+        });
+    };
+
+
+    student.drawTable = function () {
+
+        $.ajax({
+            url: "api/EnterProducts",
+            method: 'GET',
+            dataType: 'json',
+            contentType: 'application/json',
+            success: function (data) {
+                console.log(data)
+                $('#tbProduct').empty();
+                var i = 0;
+                $.each(data, function (i, v) {
+                    $('#tbProduct').append(
+                        "<tr>" +
+                        "<td>" + v.product.name + "</td>" +
+                        
+                        "<td>" + v.quantity + "</td>" +
+                        "<td>" + v.remainingAmount + "</td>" +
+                        "<td>" + student.convertDate(v.createAt) + "</td>" +
+
+                        "<td>" +
+                        "<a href='javascript:;' title='edit student' onclick='student.get(" + v.id + ")'><i class='fa fa-edit'></i></a> " +
+                        "<a href='javascript:;' title='remove student' onclick='student.delete(" + v.id + ")' ><i class='fa fa-trash'></i></a>" +
+                        "</td>" +
+                        "</tr>"
+                    );
+                });
+            }
+        });
+    };
+    student.search = function (name) {
+        setTimeout(function () {
+            $.ajax({
+                url: "api/EnterProducts/search/" + name,
+                method: 'GET',
+                dataType: 'json',
+                contentType: 'application/json',
+                success: function (data) {
+                    console.log(data)
+                    $('#tbProduct').empty();
+                    var i = 0;
+                    $.each(data, function (i, v) {
+                        $('#tbProduct').append(
+                            "<tr>" +
+                            "<td>" + v.product.name + "</td>" +
+                            "<td><img src='/Upload/" + v.product.urlImage + "'></td>" +
+                            "<td>" + v.quantity + "</td>" +
+                            "<td>" + v.remainingAmount + "</td>" +
+                            "<td>" + student.convertDate(v.createAt) + "</td>" +
+
+                            "<td>" +
+                            "<a href='javascript:;' title='edit student' onclick='student.get(" + v.id + ")'><i class='fa fa-edit'></i></a> " +
+                            "<a href='javascript:;' title='remove student' onclick='student.delete(" + v.id + ")' ><i class='fa fa-trash'></i></a>" +
+                            "</td>" +
+                            "</tr>"
+                        );
+                    });
+                }
+            });
+        }, 500);
+
+    };
+    student.convertDate = function (str) {
+        var date = new Date(str);
+        var year = date.getFullYear();
+        var month = date.getMonth() + 1 //getMonth is zero based;
+        if (month < 10) {
+            month = "0" + month;
+        }
+        var day = date.getDate();
+        var hours = date.getHours();
+        var miunutes = date.getMinutes();
+        var formatted = year + "-" + month + "-" + day + " " + hours + ":" + miunutes;
+        return formatted;
+    }
+    student.openModal = function () {
+
+        $('#addEditStudent').modal('show');
+    };
+
+    student.save = function () {
+
+        if ($('#id').val() == 0) {
+            var enterProduct = {};
+            enterProduct.ProductId = $('#typeProduct').val();
+            enterProduct.RemainingAmount = $('#remainingAmount').val();
+            console.log(enterProduct)
+            $.ajax({
+                url: "/api/EnterProducts",
+                type: "POST",
+                data: JSON.stringify(arrEnterProduct),
+                dataType: "json",
+                contentType: "application/json",
+                success: function (data) {
+                    debugger;
+                    toastr.info("Save Successfully");
+                    $('#addEditStudent').modal('hide');
+                    student.reset();
+                    student.drawTable();
+                    arrEnterProduct = [];
+                }
+            });
+        } else {
+            var enterProduct = {};
+            enterProduct.ProductId = $('#typeProduct').val();
+            enterProduct.remainingAmount = $('#remainingAmount').val();
+            enterProduct.quantity = $('#quantity').val();
+            if (JSON.stringify(enterProduct) === JSON.stringify(oldEnterProduct)) {
+                student.reset();
+                $('#addEditStudent').modal('hidden');
+                return false;
+            }
+
+            $.ajax({
+                url: "api/EnterProducts/" + $('#id').val(),
+                type: "PUT",
+                data: JSON.stringify(enterProduct),
+                dataType: "json",
+                contentType: "application/json",
+                success: function (data) {
+
+                    let check = true;
+                    if (data != null) {
+
+                        if (data.quantity !== oldEnterProduct.quantity && $('#remainingAmount').val() != data.quantity) {
+                            alert('Company Đã được thay đổi');
+                            $('#company').val(data.company);
+                            check = false;
+                        }
+                        if (check) {
+                            $('#addEditStudent').modal('hide');
+                        }
+                        student.drawTable();
+
+                    } else {
+                        toastr.info("Edit Success");
+                        $('#addEditStudent').modal('hide');
+                        student.reset();
+                        student.drawTable();
+                    }
+
+                }
+            });
+
+
+        }
+        if ($('#id').val() == 0) {
+            
+            $('#addEditStudent').modal('hide');
+            student.drawTable();
+        }
+    };
+
+    student.delete = function (id) {
+        if (confirm("Do You Want Delete")) {
+            $.ajax({
+                url: "api/EnterProducts/Delete/" + id,
+                method: "PUT",
+                dataType: "json",
+                success: function (data) {
+                    toastr.info("Deleted success");
+                    student.drawTable();
+                }
+            });
+        }
+    }
+
+
+
+    let oldEnterProduct = {}
+    student.get = function (id) {
+        $.ajax({
+            url: "api/EnterProducts/" + id,
+            method: "GET",
+            dataType: "json",
+            success: function (data) {
+                oldEnterProduct.Quantity = data.quantity;
+                oldEnterProduct.ProductId = data.product.id;
+                $('#dateAt').val(data.createAt);
+                $('#quantity').val(data.quantity);
+                $('#remainingAmount').val(data.remainingAmount);
+                $('#id').val(data.id);
+                $('#typeProduct option[value=' + data.product.id + ']').attr('selected', 'selected');
+                student.openModal();
+            }
+        });
+    };
+
+    student.reset = function () {
+
+        $('#remainingAmount').val('');
+        $('#typeProduct option[value=' + 0 + ']').attr('selected', 'selected');
+
+    };
+
+
+
+
+    student.init = function () {
+        student.drawTable();
+        student.initClass();
+        $('.js-example-basic-single').select2();
+    };
+
+    $(document).ready(function () {
+        student.init();
+    });</script>
+

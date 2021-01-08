@@ -1,0 +1,435 @@
+﻿@model WebApplication4.Models.BookingDetail
+@{
+    ViewData["Title"] = "ViewRoom";
+}
+
+<h1>ViewRoom</h1>
+<div class="card-body">
+    <input type="submit" class="btn btn-success" value="Add Customer" onclick="student.openModal()">
+    
+
+    <div class="col-3">
+        <div class="row">
+            <div id="customer">
+
+            </div>
+            <form asp-action="EditBookingDetail" class="col-5">
+                <input asp-for="ID" type="hidden" class="form-control" />
+                <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Check In</label>
+                    <input type="date" class="form-control has-feedback-left" asp-for="CheckInExpected">
+                    <span class="fa fa-arrow-circle-right form-control-feedback left" aria-hidden="true"></span>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Check Out</label>
+                    <input type="date" class="form-control has-feedback-left" asp-for="CheckOutExpected" placeholder="CheckIn">
+                    <span class="fa fa-arrow-circle-right form-control-feedback left" aria-hidden="true"></span>
+                </div>
+                @*<div class="form-group">
+            <label asp-for="CheckIn" class="control-label"></label>
+            <input asp-for="CheckIn" class="form-control" />
+            <span asp-validation-for="CheckIn" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="CheckOut" class="control-label"></label>
+            <input asp-for="CheckOut" class="form-control" />
+            <span asp-validation-for="CheckOut" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Price" class="control-label"></label>
+            <input asp-for="Price" class="form-control" />
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="NumberDate" class="control-label"></label>
+            <input asp-for="NumberDate" class="form-control" />
+            <span asp-validation-for="NumberDate" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="NumberDateDiscount" class="control-label"></label>
+            <input asp-for="NumberDateDiscount" class="form-control" />
+            <span asp-validation-for="NumberDateDiscount" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="PriceDiscount" class="control-label"></label>
+            <input asp-for="PriceDiscount" class="form-control" />
+            <span asp-validation-for="PriceDiscount" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Discount" class="control-label"></label>
+            <input asp-for="Discount" class="form-control" />
+            <span asp-validation-for="Discount" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Total" class="control-label"></label>
+            <input asp-for="Total" class="form-control" />
+            <span asp-validation-for="Total" class="text-danger"></span>
+        </div>
+        <div class="form-group" id="Room"> <label asp-for="RoomId" class="control-label"></label></div>*@
+                
+                    <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Room</label>
+                        <select asp-for="RoomId" class="form-control" asp-items="ViewBag.RoomId"></select>
+
+                        <span asp-validation-for="RoomId" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
+                        <input type="submit" style="margin-top:24px; width:100%" value="Update" class="btn btn-primary" />
+                    </div>
+            </form>
+            <hr style="height:2px;border-width:0;color:gray;background-color:gray"/>
+            <table>
+
+                <tbody id="formCustomer"></tbody>
+
+            </table>
+
+        </div>
+        <div class="col-6">
+            <div class="row">
+
+                <div class="col-md-3 col-sm-3 col-xs-6 form-group has-feedback"><select class="row_selected" style="width: 100%; height: 29px;" id="selectProduct" onchange="changePrice();"></select></div>
+                <div class="col-md-3 col-sm-3 col-xs-6 form-group has-feedback"><input class="form-control"   style="width: 100%; height: 100%" id="priceProduct" type="text" readonly></div>
+                <div class="col-md-3 col-sm-3 col-xs-6 form-group has-feedback"><input class="form-control" style="width: 100%; height:100%" type="number" id="quantity"></div>
+                <div class="col-md-3 col-sm-3 col-xs-6 form-group has-feedback">
+                    <input class="btn btn-success" type="submit"
+                           onclick="saveBillDetail()" style="width:100%;" value="Add">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2 col-sm-2 col-xs-4 form-group has-feedback">Name Product</div>
+                <div class="col-md-2 col-sm-2 col-xs-4 form-group has-feedback">Quantity Product</div>
+                <div class="col-md-2 col-sm-2 col-xs-4 form-group has-feedback">Price Product</div>
+                <div class="col-md-2 col-sm-2 col-xs-4 form-group has-feedback">Quantity Product</div>
+                <div class="col-md-2 col-sm-2 col-xs-4 form-group has-feedback">Total</div>
+            </div>
+            <div id="product">
+
+            </div>
+            <div class="row">
+                <div class="col-md-9 col-sm-9 col-xs-18 form-group has-feedback" style="color: #bd2130">Total</div>
+                <div class="col-md-3 col-sm-3 col-xs-6 form-group has-feedback" style="color: #bd2130;" id="totalProduct"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="modal" id="addEditStudent">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Create Student</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                @*<form id="formAddEditStudent">*@
+                    @*<div class="row form-group">*@
+                        <div class="row">
+                        <div class="col-4">
+                            <label>Name Customer</label>
+                        </div>
+                        <div class="col-8">
+                            <input class="form-control" type="text"
+                                   name="NumberRoom" id="nameCustomer"
+                                   data-rule-required=true>
+                        </div>
+                            </div>
+                        <div class="row">
+                            <div class="col-4">
+                                <label>IDentity</label>
+                            </div>
+                            <div class="col-8">
+                                <input class="form-control" type="text"
+                                       name="NumberRoom" id="Identity"
+                                       data-rule-required=true>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">
+                                <label>Address</label>
+                            </div>
+                            <div class="col-8">
+                                <input class="form-control" type="text"
+                                       name="NumberRoom" id="address"
+                                       data-rule-required=true>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">
+                                <label>Email</label>
+                            </div>
+                            <div class="col-8">
+                                <input class="form-control" type="email"
+                                       name="NumberRoom" id="email"
+                                       data-rule-required=true>
+                            </div>
+                        </div>
+                    @*</div>*@
+                @*</form>*@
+            </div>
+            
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <a href="javascript:;" class="btn btn-primary"
+                   onclick="saveCustomer()">Save</a>
+
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.4.0/bootbox.min.js"></script>
+<script>
+    var student = {};
+    var openFormCustomer = function () {
+        $('#addEditStudent').modal('show');
+    }
+    var changePrice = function () {
+        $('#priceProduct').val($('#selectProduct').find(':selected').data('price'));
+        $('#quantity').attr("placeholder",$('#selectProduct').find(':selected').data('quantity'));
+    };
+    setTimeout(function () {
+        $('#priceProduct').val($('#selectProduct').find(':selected').data('price'));
+        $('#quantity').attr("placeholder", $('#selectProduct').find(':selected').data('quantity'));
+    }, 1000);
+    var totalProduct;
+    student.openModal = function () {
+        $('#addEditStudent').modal('show');
+        
+    };
+    var drawRoom = function () {
+        var checkIn =  $('#CheckInExpected').val();
+        var checkOut = $('#CheckOutExpected').val();
+        var idRoom = $('#RoomId').val();
+        $.ajax({
+            url: '/api/ProductsApi/' + idRoom + '/' + checkIn+'/'+checkOut,
+            method: "GET",
+            dataType: "json",
+            success: function (data) {
+                  var str;
+                str = "<select class=form-control id='IdRoom'>";
+
+                $.each(data, function (i, v) {
+                    str += '<option value=' + v.id + '>' + v.name + '</option>';
+                });
+                str += '</option>';
+                $('#Room').append(str);
+            }
+        });
+
+    };
+    var drawBillDetail = function () {
+        
+        $.ajax({
+            url:"api/BillDetails/"+ $('#ID').val(),
+            method: "GET",
+            dataType: "json",
+            success: function (data) {
+                totalProduct = 0;
+                $('#product').empty();
+                $('#totalProduct').empty();
+                var str = "";
+                var total =0;
+                $.each(data, function (i, v) {
+                    str += '<div class="row"><div class="col-md-3 col-sm-3 col-xs-6 form-group has-feedback" ><input type="text" readonly class="form-control" value ="' + v.product.name + '"></div>';
+                    str += '<div class="col-md-3 col-sm-3 col-xs-6 form-group has-feedback" style="text-align: right;"><input type="text" readonly class="form-control" value ="' + v.price + '"></div>';
+                    str += '<div class="col-md-3 col-sm-3 col-xs-6 form-group has-feedback" style="text-align: right;"><input type="text" readonly class="form-control" value ="' + v.quantity + '"></div>';
+                    str += '<div class="col-md-3 col-sm-3 col-xs-6 form-group has-feedback" style="text-align: right;"><input type="text" readonly class="form-control" value ="' + v.total + '"></div></div>';
+                    total += v.total;
+                });
+                
+                $('#product').append(str);
+                $('#totalProduct').append(total);
+            }
+        });
+
+    };
+    var drawCustomer = function () {
+        
+        $.ajax({
+            url:"api/HomeApi/Customers/"+ $('#ID').val(),
+            method: "GET",
+            dataType: "json",
+            success: function (data) {
+                //<div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
+                //    <label class="control-label col-md-3 col-sm-3 col-xs-12">Check In</label>
+                //    <input type="date" class="form-control has-feedback-left" asp-for="CheckInExpected">
+                //    <span class="fa fa-arrow-circle-right form-control-feedback left" aria-hidden="true"></span>
+                //</div>
+               
+                $('#customer').html("");
+                
+                var str="";
+           
+                $.each(data, function (i, v) {
+                    str += '<div class ="form-group">';
+                    str+= '</div><div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback"><label class="control-label col-md-3 col-sm-3 col-xs-12">Name Customer</label>';
+                    str += '<input type="text" readonly class="form-control" value='+ v.name + '></div>';
+                    str += '<div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback"><label class="control-label col-md-3 col-sm-3 col-xs-12">Id Customer</label>';
+                    str += '<input type="text" readonly class="form-control" value=' + v.identityCard + '></div>';
+                    //str += '<div class="form-group"><label class="control-label">Email</label>';
+                    //str += '<div class="form-control">' + v.email + '</div></div>';
+                    //str += '<div class="form-group"><label class="control-label">Address</label>';
+                    //str += '<div class="form-control">' + v.address + '</div></div>';
+                });
+                
+                $('#customer').append(str);
+                
+            }
+        });
+
+    };
+    var saveBillDetail = function () {
+        var billDetail = {};
+        billDetail.BookingDetailId = $('#ID').val();
+        billDetail.quantity = $('#quantity').val();
+        billDetail.ProductId = $('#selectProduct').val();
+        billDetail.price = $("#priceProduct").val();
+        billDetail.total = billDetail.quantity * billDetail.price;
+        if (billDetail.quantity < 1) {
+            return false;
+        }
+
+        $.ajax({
+            url: "api/BillDetails",
+            method: "POST",
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify(billDetail),
+            success: function (data) {
+                drawBillDetail();
+
+            }
+        });
+    };
+     var saveCustomer = function () {
+        var customer = {};
+        customer.BookingDetailId = $('#ID').val();
+        customer.name = $('#nameCustomer').val();
+        customer.address = $('#address').val();
+        customer.email = $("#email").val();
+        customer.IdentityCard = $("#Identity").val();
+
+        $.ajax({
+            url: "api/HomeApi/Customer",
+            method: "POST",
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify(customer),
+            success: function (data) {
+                drawCustomer();
+                $('#addEditStudent').modal('hide');
+                $('#nameCustomer').val("");
+                $('#address').val("");
+                $("#email").val("");
+                $("#Identity").val("");
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                drawCustomer();
+                $('#addEditStudent').modal('hide');
+                 $('#nameCustomer').val("");
+                $('#address').val("");
+                $("#email").val("");
+                $("#Identity").val("");
+            }
+        });
+    };
+   
+    student.reset = function () {
+        $('#name').val('');
+        $('#price').val('');
+        $('#id').val('0');
+        var validator = $("#formAddEditStudent").validate();
+        validator.resetForm();
+    };
+    student.drawTable = function () {
+        $.ajax({
+            url: "api/BillDetails/Product",
+            method: "GET",
+            dataType: "json",
+            success: function (data) {
+                $('#formAddEditStudent').empty();
+                var i = 0;
+                $.each(data, function (i, v) {
+                    if (v.quantity != 0) {
+                        $('#selectProduct').append(
+                            "<option data-quantity='" + v.quantity + "' data-price='" + v.priceProduct + "' value='" + v.id + "'>" + v.name + "</option>"
+                        );
+                    }
+                  
+                });
+            }
+        });
+    };  
+    drawFormCustomer = function () {
+        let txt = "<tr>Customer" + (count++) + "<input type=\"hidden\" name=\"id1\" value='0' required/></tr><tr>\n" +
+            "                        <td>Name:</td>\n" +
+            "                        <td><input type=\"text\" name=\"name1\" required/></td>\n" +
+            "                    </tr>\n" +
+            "                    <tr>\n" +
+            "                        <td>Address:</td>\n" +
+            "                        <td><input type=\"text\" name =\"address1\" required/></td>\n" +
+            "                    </tr>\n" +
+            "                    <tr>\n" +
+            "                        <td>ID Card:</td>\n" +
+            "                        <td><input type=\"text\" name=\"identityCard1\" required/></td>\n" +
+            "                    </tr>\n" +
+            "                    <tr>\n" +
+            "                        <td>Email :</td>\n" +
+            "                        <td><input type=\"text\" name=\"email1\" /></td>\n" +
+            "                    </tr>";
+        document.getElementById("formCustomer").innerHTML += txt;
+    };
+    var deleteProduct = function (id) {
+        // confirm({
+        //     title: "Remove Room",
+        //     message: "Do you want to remove this room?",
+        //     size:'small',
+        //     buttons: {
+        //         cancel: {
+        //             label: '<i class="fa fa-times"></i> No'
+        //         },
+        //         confirm: {
+        //             label: '<i class="fa fa-check"></i> Yes'
+        //         }
+        //     },
+        //     callback: function (result) {
+        //         if (result) {
+        $.ajax({
+            url: "http://localhost:8080/api/billDetail/" + id,
+            method: "PUT",
+            dataType: "json",
+            success: function (data) {
+
+                drawBillDetail($('#id').val());
+            }
+        });
+        //         }
+        //     }
+        // });
+    };
+    var innit = function () {
+        student.drawTable();
+        drawBillDetail();
+        drawCustomer();
+        changePrice();
+    };
+    window.onload = function () {
+        innit();
+        
+    };
+</script>
+

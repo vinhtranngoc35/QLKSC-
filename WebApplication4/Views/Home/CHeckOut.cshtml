@@ -1,0 +1,220 @@
+﻿@model WebApplication4.Models.Booking
+@{
+    ViewData["Title"] = "CHeckOut";
+}
+
+
+<div id="wrapper">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12">
+                <div class="center-pill">
+                    <hr style="margin-top: 40px;
+    border: 1px solid">
+                    <img src="~/images/logo.png" alt="logo" style="height: 180px;
+    margin-left: 454px;
+    margin-top: -101px;
+    width: 180px;">
+                    <h2 style="text-align: center">HomeStay Team Liquid</h2>
+                </div>
+                <form id="formVinh">
+
+                    <input type="hidden" name="idBooking" th:value="${booking.getId()}">
+                    <div class="col-4" style="margin-top: 127px;">
+                        <div class="row">
+                            <div class="col-md-1 col-sm-1 col-xs-2 form-group has-feedback" style="text-align:left;">Name:</div>
+                            <div class="col-md-2 col-sm-2 col-xs-4 form-group has-feedback" style="text-align:right;"> @Html.DisplayFor(model => model.Customer.Name)</div>
+                            <div class="col-md-9 col-sm-9 col-xs-18 form-group has-feedback" style="text-align:right;">HomeStay Team Liquid</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-1 col-sm-1 col-xs-2 form-group has-feedback" style="text-align:left;"> Address:</div>
+                            <div class="col-md-2 col-sm-2 col-xs-4 form-group has-feedback" style="text-align:right;"> @Html.DisplayFor(model => model.Customer.Address)</div>
+                            <div class="col-md-9 col-sm-9 col-xs-18 form-group has-feedback" style="text-align:right;">
+                                105 Chi Lang, P.Phu Cat,TP.Hue,Tinh
+                                TT-Hue
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-1 col-sm-1 col-xs-2 form-group has-feedback" style="text-align:left;"> Check in:</div>
+                            <div class="col-md-2 col-sm-2 col-xs-4 form-group has-feedback" style="text-align:right;">@Html.DisplayFor(model => model.CheckIn)</div>
+                            <div class="col-md-9 col-sm-9 col-xs-18 form-group has-feedback" style="text-align:right;">0969990065</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-1 col-sm-1 col-xs-2 form-group has-feedback" style="text-align:left;"> Check out:</div>
+                            <div class="col-md-2 col-sm-2 col-xs-4 form-group has-feedback" style="text-align:right;">@Html.DisplayFor(model => model.CheckOut)</div>
+                            <div class="col-md-9 col-sm-9 col-xs-18 form-group has-feedback" style="text-align:right;">vinhtranngoc@gmail.com</div>
+                        </div>
+                    </div>
+                    <table class="table">
+                        <thead style="font-weight: bold;">
+                        <th style=" vertical-align: bottom;
+            border-bottom: 2px solid black;">
+                            Type Room
+                        </th>
+                        <th style=" vertical-align: bottom;
+            border-bottom: 2px solid black;">
+                            Number Date Stay
+                        </th>
+                        <th style=" vertical-align: bottom;
+            border-bottom: 2px solid black;">
+                            Price
+                        </th>
+                        <th style=" vertical-align: bottom;
+            border-bottom: 2px solid black;">
+                            Total
+                        </th>
+                        </thead>
+                        @foreach (var item in Model.BookingDetails)
+                        {
+                            <input type="hidden" asp-for="@item.ID" />
+                            @if (item.PriceDiscount != 0)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Room.TypeRoom.Name)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.NumberDate)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Price) VNĐ
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.PriceRoom) VNĐ
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Discount @Html.DisplayFor(modelItem => item.Discount)%</td>
+                                    <td>@Html.DisplayFor(modelItem => item.NumberDateDiscount)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.PriceDiscount) VNĐ</td>
+                                    <td style="color:orangered;">@Html.DisplayFor(modelItem => item.Total) VNĐ</td>
+                                </tr>
+                            }
+                            @if(item.PriceDiscount == 0) {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Room.TypeRoom.Name)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.NumberDate)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Price) VNĐ
+                                    </td>
+                                    <td style="color:orangered">
+                                        @Html.DisplayFor(modelItem => item.PriceRoom) VNĐ
+                                    </td>
+                                </tr>
+
+                            }
+
+                        }
+                        <thead>
+                            <tr style="font-weight: bold;">
+                                <td style=" vertical-align: bottom;
+            border-bottom: 2px solid black;">
+                                    Product
+                                </td>
+                                <td style=" vertical-align: bottom;
+            border-bottom: 2px solid black;">
+                                    Quantity
+                                </td>
+                                <td style=" vertical-align: bottom;
+            border-bottom: 2px solid black;">
+                                    Product
+                                </td>
+                                <td style=" vertical-align: bottom;
+            border-bottom: 2px solid black;">
+                                    Total
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody id="product">
+                        </tbody>
+                    </table>
+                    <div style="">
+                        <div class="row">
+                            <div class="col-md-3 col-sm-3 col-xs-6 form-group has-feedback">
+                                @if (!Model.Status)
+                                {
+                                <a class="btn btn-success" asp-action="Pay" asp-route-id="@Model.ID">Pay</a>
+                                }
+                            </div>
+
+                            <div class="col-md-2 col-sm-2 col-xs-4 form-group has-feedback"></div>
+                            <div class="col-md-7 col-sm-7 col-xs-14 form-group has-feedback" style="font-weight: bold; margin-left: 640px;">
+                                <div class="row">
+                                    <table style="margin-left:-40px;">
+                                        <tr>
+                                        <td style="width: 100px;">Price Service:</td>
+                                            <td style="width:30px">          </td>
+                                        <td style="text-align:right" id="totalProduct"></td>
+                                            </tr>
+                                        <tr>
+                                            <td style="width:100px">
+                                                Price Room:
+                                            </td>
+                                            <td style="width:130px">          </td>
+                                            <td style="text-align:right">@Html.DisplayFor(model => model.PriceRoom) VNĐ</td>
+                                        </tr>
+                                        <tfoot style="color:orangered; font-size:larger">
+                                            <tr>
+                                                <td style="width: 100px;">ToTal:</td>
+                                                <td style="width:30px">          </td>
+                                                <td style="text-align:right">@Html.DisplayFor(model => model.Total) VNĐ</td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                    @*<div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">Total Product</div>
+                                    <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback" id="totalProduct"></div>*@
+                                </div>
+                            </div>
+                        </div>
+                         </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.4.0/bootbox.min.js"></script>
+<script>
+    var totalProduct;
+    var drawBillDetail = function (id) {
+        $.ajax({
+            url: "https://localhost:44375/Home/Rooms/api/billDetails/" + id,
+            method: "GET",
+            dataType: "json",
+            success: function (data) {
+                totalProduct = 0;
+                $('#product').empty();
+                $('#totalProduct').empty();
+                var i = 0;
+                $.each(data, function (i, v) {
+                    totalProduct += v.total;
+                    $('#product').append(
+                        "<tr>" +
+                        "<td>" + v.product.name + "</td>" +
+                        "<td>" + v.quantity + "</td>" +
+                        "<td>" + v.price + " VNĐ </td>" +
+                        "<td>" + v.total + " VNĐ </td></tr>"
+                    );
+                });
+                $('#totalProduct').append(totalProduct + ' VNĐ');
+            }
+        });
+
+    };
+    let arrays = $("input[name='item.ID']").map(function () {
+        return $(this).val();
+    }).get();
+    for (let i = 0; i < arrays.length; i++) {
+        drawBillDetail(arrays[i]);
+    }
+</script>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

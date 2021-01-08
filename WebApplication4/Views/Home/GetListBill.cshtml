@@ -1,0 +1,70 @@
+﻿@model IEnumerable<WebApplication4.Models.Booking>
+
+@{
+    ViewData["Title"] = "GetListBill";
+}
+
+<h1>GetListBill</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CheckIn)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CheckOut)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Customer)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NumberRoom)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PriceRoom)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ExtraPrice)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Total)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CheckIn)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CheckOut)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Customer.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NumberRoom)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PriceRoom)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExtraPrice)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Total)
+            </td>
+            <td>
+                <a asp-action="CheckOut" asp-route-id="@item.ID">Details</a> |
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

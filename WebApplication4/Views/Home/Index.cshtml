@@ -1,0 +1,180 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+@model WebApplication4.Models.CreateBooking
+
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+    <h1>CreateBooking</h1>
+
+<h4></h4>
+<hr />
+<div class="card-body">
+    <div id="validate" class="error"></div>
+    <div class="table-row-cell content">
+        <form action="home/create" id="formVinh" method="post" class="form-horizontal form-label-left input_mask">
+            <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
+                <input type="text" class="form-control has-feedback-left" asp-for="Customer.Name" placeholder="Full Name">
+                <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
+            </div>
+
+            <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
+                <input type="text" class="form-control" asp-for="Customer.IdentityCard" placeholder="IdentityCard">
+                <span class="fa fa-user form-control-feedback right" aria-hidden="true"></span>
+            </div>
+
+            <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
+                <input type="text" class="form-control has-feedback-left" asp-for="Customer.Email" placeholder="Email">
+                <span class="fa fa-envelope form-control-feedback left" aria-hidden="true"></span>
+            </div>
+
+            <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
+                <input type="text" class="form-control" asp-for="Customer.Address" placeholder="Address">
+                <span class="fa fa-user form-control-feedback right" aria-hidden="true"></span>
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
+                <label>Check In</label>
+                <input type="date" class="form-control has-feedback-left" asp-for="Booking.CheckIn" placeholder="CheckIn">
+                <span class="fa fa-arrow-circle-right form-control-feedback left" aria-hidden="true"></span>
+            </div>
+
+            <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
+                <label>Check Out</label>
+                <input type="date" class="form-control" asp-for="Booking.CheckOut" placeholder="CheckOut">
+                <span class="fa fa-arrow-circle-left form-control-feedback right" aria-hidden="true"></span>
+            </div>
+            <div id="rooms" style="margin-left:15px;"></div>
+            <div id="price"></div>
+            <div class="form-group">
+                <div class="ln_solid"></div>
+            </div>
+            <div class="form-group row">
+                    <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                        <input type="submit" onclick=" return validate()" class="btn btn-success"
+                               value="Create Booking">
+                        </div>
+                    </div>
+</form>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
+<script>
+    var roomIsBooking;
+    roomIsBooking = document.getElementsByName('roomIsBooking').value;
+    var roomIsBooked;
+    var roomIsTypeRoom;
+    var user = user || {};
+    var rooms;
+    var arrayValidate = [];
+    user.roomIsBooked = function (checkIn, checkOut) {
+        
+        $.ajax({
+            url: 'Rooms/api/ProductsApi/booking/' + checkIn +' 10:08:09.830/' + checkOut +' 10:08:09.830',
+            method: 'GET',
+            dataType: 'json',
+            contentType: 'application/json',
+            success: function (data) {
+                let str = '<div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">';
+                $('#rooms').empty();
+                $('#typeRooms').empty();
+                $.each(data, function (index, value) {
+                     //<div class="form-group">
+                     //   <label class="control-label col-md-3 col-sm-3 col-xs-12">Default Input</label>
+                     //   <div class="col-md-9 col-sm-9 col-xs-12">
+                     //     <input type="text" class="form-control" placeholder="Default Input">
+                     //   </div>
+                     // </div>
+                    str += "<div class='form-group'><label style='text-align:left;' class='control-label col-md-3 col-sm-3 col-xs-12'><input type='checkbox' onclick='hudaChange(" + value.typeRoomId + ',' + value.priceRoom + ")' class='typeRoomId control-label' name='TypeRoomId' id='" + value.typeRoomId + "'value='" + value.typeRoomId + "'>" + value.name + "</label>";
+                    str += "<div class='col-md-9 col-sm-9 col-xs-12'><input type='text' class='form-control' name='NumberRoom' id='NumberRoom" + value.typeRoomId + "' data-rule-range='1," + value.numberRoom + "'  placeholder='" + value.numberRoom + " Room available' disabled></div></div>";
+                   
+                    arrayValidate.push(value.TypeRoomId);
+                    //$('#rooms').append("<input type='text' name='NumberRoom' id='NumberRoom" + value.typeRoomId + "' data-rule-range='1," + value.numberRoom + "'  placeholder='" + value.numberRoom + " Room available' disabled><br>");
+                    //$('#typeRooms').append("<input type='checkbox' onclick='hudaChange(" + value.typeRoomId + ',' + value.priceRoom + ")' class='typeRoomId' name='TypeRoomId' id='" + value.typeRoomId + "'value='" + value.typeRoomId + "'>" + value.name + "<br>");
+                    $('#price').append("<input type='hidden' readonly id='" + value.priceRoom + "' class='price' disabled name='PriceRoom' value='" + value.priceRoom + "'readonly></br>");
+                })
+                // });
+                str += '</div>';
+                $('#rooms').append(str);
+            }
+        });
+    };
+    user.roomIsTypeRoom = function (id) {
+        $.ajax({
+            url: 'http://localhost:8080/rooms/' + id,
+            method: 'GET',
+            dataType: 'json',
+            contentType: 'application/json',
+            success: function (data) {
+                roomIsTypeRoom = data;
+            }
+        });
+    };
+    let count = 0;
+    var a = "";
+    var b = "";
+    setInterval(function () {
+        if ((document.getElementById('Booking_CheckIn').value !== a) && (document.getElementById('Booking_CheckOut').value !== b)) {
+            user.roomIsBooked(document.getElementById('Booking_CheckIn').value, document.getElementById('Booking_CheckOut').value);
+            a = document.getElementById('Booking_CheckIn').value;
+            b = document.getElementById('Booking_CheckOut').value;
+        }
+
+    }, 500);
+    validate = function () {
+        if ($('#formVinh').valid()) {
+
+        }
+        let check = false;
+
+        for (let i = 0; i < arrayValidate.length; i++) {
+            if (document.getElementById(arrayValidate[i] + "").checked) {
+                check = true;
+            }
+
+        }
+        if (!check) {
+            document.getElementById('validate').innerHTML = "Please select type room";
+        }
+
+        if ((Date.parse(document.getElementById('checkIn').value) + 86400000) < Date.now()) {
+
+            check = false;
+            document.getElementById('validate').innerHTML = "Check in should bigger now";
+        }
+        if (document.getElementById('checkIn').value > document.getElementById('checkOut').value) {
+            document.getElementById('validate').innerHTML = "Check out should bigger check in";
+            check = false;
+        }
+        return check;
+    };
+    hudaChange = function (idCheckBox, idPrice) {
+        let idRoom = '#NumberRoom' + idCheckBox;
+        idCheckBox = '#' + idCheckBox;
+        idPrice = '#' + idPrice;
+
+
+        if ($(idCheckBox).is(":checked")) {
+            $(idPrice).prop('disabled', '');
+            $(idPrice).prop('required', 'true');
+            $(idRoom).prop('disabled', '');
+            $(idRoom).prop('required', 'true');
+        } else {
+            $(idPrice).prop('disabled', 'disabled');
+            $(idPrice).prop('required', 'false');
+            $(idRoom).prop('disabled', 'disabled');
+            $(idRoom).prop('required', 'false');
+        }
+    }
+</script>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

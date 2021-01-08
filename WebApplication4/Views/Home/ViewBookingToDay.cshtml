@@ -1,0 +1,46 @@
+﻿@model IEnumerable<WebApplication4.Models.Booking>
+
+@{
+    ViewData["Title"] = "BookingToDay";
+}
+
+<h1>BookingToDay</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CheckIn)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CheckOut)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Customer)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CheckIn)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CheckOut)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Customer.Name)
+                </td>
+                <td>
+                    <a class="btn btn-success" asp-action="BookingToday" asp-route-id="@item.ID">Check Out</a> | 
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

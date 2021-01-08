@@ -1,0 +1,42 @@
+﻿@model IEnumerable<WebApplication4.Models.ViewRoom>
+@{
+    ViewData["Title"] = "RoomsAvaible";
+}
+
+<h1>RoomsAvaible</h1>
+<div id="wrapper">
+     <div class="card-body">
+           
+                @foreach (var item in Model)
+                {
+
+                    @if (item.Status)
+                    {
+     <div class="col-md-4 col-sm-4 col-xs-8 form-group has-feedback">
+         <div style="height:150px; width: 100%; background-color:red; text-align:center;">
+             <a class="btn btn-danger" style="background-color:red;" asp-action="Rooms" asp-route-id="@item.ID">@Html.DisplayFor(modelItem => item.NameRoom)</a>
+             @foreach (var nameCustomer in item.NameCustomers)
+             {
+                 <p style="background-color:red; color:white">Name Customer: @Html.DisplayFor(modelItem => nameCustomer)</p>
+
+              }
+
+
+
+         </div>
+     </div>
+     }
+     else
+     {
+     <div class="col-md-4 col-sm-4 col-xs-8 form-group has-feedback">
+         <div style="height:150px; width: 100%; background-color:deepskyblue; text-align:center;">
+             <a class="btn btn-info" href="#">@Html.DisplayFor(modelItem => item.NameRoom)</a>
+            
+         </div>
+         </div>
+         }
+
+
+         }
+     </div>
+    </div>
